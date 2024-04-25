@@ -118,26 +118,28 @@ public class PrintService {
 
     public static void showHistoryReservations() {
         List<Reservation> reservations = ReservationRepository.getAllReservations();
-        List<Reservation> finishedReservations = reservations.stream()
-                .filter(r -> "Finish".equals(r.getWorkstage()))
+        List<Reservation> historyReservations = reservations.stream()
+                .filter(r -> "Finish".equals(r.getWorkstage()) || "Cancel".equals(r.getWorkstage()))
                 .collect(Collectors.toList());
 
-        if (finishedReservations.isEmpty()) {
-            System.out.println("\nThere are no finished reservations at this time.");
+        if (historyReservations.isEmpty()) {
+            System.out.println("\nThere are no historical reservations at this time.");
         } else {
             System.out.println("+-----+---------+---------------+-------------------------------------------------+---------------+------------+");
             System.out.println("|No   | ID      | Nama Customer | Service                                         | Total Biaya   | Workstage  |");
             System.out.println("+-----+---------+---------------+-------------------------------------------------+---------------+------------+");
             int num = 1;
             double totalIncome = 0;
-            for (Reservation reservation : finishedReservations) {
+            for (Reservation reservation : historyReservations) {
                 String services = reservation.getServices().stream()
                         .map(service -> service.getServiceName())
                         .collect(Collectors.joining(", "));
                 System.out.printf("|%-4d | %-7s | %-13s | %-47s | Rp%-11.2f | %-10s |\n",
                         num++, reservation.getReservationId(), reservation.getCustomer().getName(),
                         services, reservation.getReservationPrice(), reservation.getWorkstage());
-                totalIncome += reservation.getReservationPrice();
+                if ("Finish".equals(reservation.getWorkstage())) {
+                    totalIncome += reservation.getReservationPrice();
+                }
             }
             System.out.println("+-----+---------+---------------+-------------------------------------------------+---------------+------------+");
             System.out.printf("| Total Keuangan                                                                  | Rp%-24.2f |\n", totalIncome);

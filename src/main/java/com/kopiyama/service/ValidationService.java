@@ -180,14 +180,22 @@ public class ValidationService {
     }
 
     public static String validateWorkstage() {
-        while (true) {
-            System.out.print("Please enter Workstage status (Finish or Cancel): ");
-            String workstage = input.nextLine().trim();
+        System.out.println("Please enter Workstage status:");
+        System.out.println("1. Finish");
+        System.out.println("2. Cancel");
+        System.out.print("Enter your choice: ");
 
-            if (workstage.equalsIgnoreCase("Finish") || workstage.equalsIgnoreCase("Cancel")) {
-                return workstage;
-            } else {
-                System.out.println("Invalid status entered. Only 'Finish' or 'Cancel' are accepted.");
+        while (true) {
+            String choice = input.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    return "Finish";
+                case "2":
+                    return "Cancel";
+                default:
+                    System.out.println("Invalid choice entered. Please enter 1 for Finish or 2 for Cancel.");
+                    System.out.print("Enter your choice: ");
+                    break;
             }
         }
     }
